@@ -1,0 +1,62 @@
+// Два числа в 5 сс считываются в массивы (числа одинаковой длины). Получить третий массив, представояющий их сумму в 5 сс.
+#include <iostream>
+using namespace std;
+int main()
+{
+	const int n = 32;
+	int A[n], B[n];
+	for (int i = 0; i < n; i++)
+		A[i] = 2;
+	cout << endl;
+	for (int i = 0; i < n; i++)
+		B[i] = 3;
+	cout << endl;
+	
+	int cc = 5, k = 0;
+	int SUM[n+1];
+	int sum = 0;
+	for (int j = 0; j < n; j++) {
+		sum = A[n - j-1] + B[n - j-1] + k;
+		if (n - j == 0) {
+			SUM[n - j] = 1;
+			break;
+		}
+		if (sum >= cc) {
+			k = 1;   
+			SUM[n - j] = sum - cc;
+		}
+		else
+			SUM[n - j] = sum;
+	}
+	int kol = 1;
+	for (int i = 0; i < n + 1; i++) {
+		cout << SUM[i];
+		if (SUM[i] == 1)
+			kol++;
+		if (i == 0)
+			cout << "   ";
+	}
+	cout << endl;
+	cout << "kol = " << kol;
+}
+
+
+//const int n = 32;
+//int A[n], B[n];
+//for (int i = 0; i < n; i++)
+//	A[i] = 2;
+//cout << endl;
+//for (int i = 0; i < n; i++)
+//	B[i] = 3;
+//cout << endl;
+
+//const int n = 5;
+//int A[n], B[n];
+//for (int i = 0; i < n; i++)
+//	cin >> A[i];
+//cout << endl;
+//for (int i = 0; i < n; i++)
+//	cin >> B[i];
+//cout << endl;
+
+
