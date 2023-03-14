@@ -1,0 +1,114 @@
+#include <iostream>
+#include <fstream>
+#include <ctime>
+#include <thread>
+#include <chrono>
+using namespace std::chrono;
+using namespace std;
+bool f = true;
+
+void create(int** g, int n) {
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            g[i][j] = rand() % 2;
+}
+
+void print(int** g, int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++)
+            cout << g[i][j] << " ";
+        cout << endl;
+    }
+}
+
+void create2(int** g1, int** g2, int n) {
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            g2[i][j] = g1[i][j];
+    int a; 
+    a = rand() % 2;
+    int b;
+    b = rand() % 2;
+    while (a == b)
+        b = rand() % n;
+    for (int i = 0; i < n; i++) {
+        g2[i][a] = g1[i][b];
+        g2[i][b] = g1[i][a];
+    }
+
+    int c;
+    for (int i = 0; i < n; i++) {
+        c = g2[a][i];
+        g2[a][i] = g2[b][i];
+        g2[b][i] = c;
+    }
+}
+
+bool izomorf(int** g1, int** g2, int n) {
+    int** g3 = new int* [n];
+    for (int i = 0; i < n; i++) {
+        g3[i] = new int[n];
+    }
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            for (int k = 0; k < n; k++) {
+                for (int l = 0; l < n; l++) {
+                    g3[k][l] = g1[k][l];
+                }
+            }
+            int a; 
+            a = i;
+            int b;
+            b = j;
+            for (int k = 0; k < n; k++) {
+                g3[k][a] = g1[k][b];
+                g3[k][b] = g1[k][a];
+            }
+            int c;
+            for (int k = 0; k < n; k++) {
+                c = g3[a][k];
+                g3[a][k] = g3[b][k];
+                g3[b][k] = c;
+            }
+            for (int k = 0; k < n; k++)
+                for (int l = 0; l < n; l++)
+                    if (g3[k][l] != g2[k][l]) {
+                        f = false;
+                    }
+            if (f)
+                return true; 
+        }
+    }
+    return false;
+}
+
+
+int main()
+{
+    int  n;
+    cin >> n;
+    setlocale(LC_ALL, "ru");
+    srand(time(0));
+    int** g1 = new int* [n];
+    for (int i = 0; i < n; i++)
+        g1[i] = new int[n];
+    create(g1, n);
+    int** g2 = new int* [n];
+    for (int i = 0; i < n; i++)
+        g2[i] = new int[n];
+    create2(g1, g2, n);
+    auto t0 = high_resolution_clock::now();
+    thread th1(izomorf, g1, g2, n);
+    th1.join();
+    auto t1 = high_resolution_clock::now();
+    print(g1, n);
+    cout << "\n";
+    print(g2, n);
+    cout << duration_cast<milliseconds>(t1 - t0).count() << "msec\n";
+    bool m = izomorf(g1, g2, n);
+    if (m == true)
+        cout << "Два графа изоморфны" << endl;
+    else
+        cout << "Два графа не изоморфны" << endl;
+    return 0; 
+}
